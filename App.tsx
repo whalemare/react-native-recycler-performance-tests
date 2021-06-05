@@ -8,108 +8,61 @@
  * @format
  */
 
- import React from 'react';
- import {
-   SafeAreaView,
-   ScrollView,
-   StatusBar,
-   StyleSheet,
-   Text,
-   useColorScheme,
-   View,
- } from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {
+  Button,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Data} from './src/Data';
+import {Recycler} from './src/Recycler';
 
- import {
-   Colors,
-   DebugInstructions,
-   Header,
-   LearnMoreLinks,
-   ReloadInstructions,
- } from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const isDarkMode = useColorScheme() === 'dark';
+  const [count, setCount] = useState(1);
+  const items = useMemo(() => {
+    return generateItems(count);
+  }, [count]);
 
- const Section: React.FC<{
-   title: string;
- }> = ({children, title}) => {
-   const isDarkMode = useColorScheme() === 'dark';
-   return (
-     <View style={styles.sectionContainer}>
-       <Text
-         style={[
-           styles.sectionTitle,
-           {
-             color: isDarkMode ? Colors.white : Colors.black,
-           },
-         ]}>
-         {title}
-       </Text>
-       <Text
-         style={[
-           styles.sectionDescription,
-           {
-             color: isDarkMode ? Colors.light : Colors.dark,
-           },
-         ]}>
-         {children}
-       </Text>
-     </View>
-   );
- };
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
 
- const App = () => {
-   const isDarkMode = useColorScheme() === 'dark';
+  return (
+    <SafeAreaView style={[backgroundStyle, {flex: 1}]}>
+      {/* <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} /> */}
 
-   const backgroundStyle = {
-     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-   };
+      {/* <View style={{flex: 1}}>
+      </View> */}
 
-   return (
-     <SafeAreaView style={backgroundStyle}>
-       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-       <ScrollView
-         contentInsetAdjustmentBehavior="automatic"
-         style={backgroundStyle}>
-         <Header />
-         <View
-           style={{
-             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-           }}>
-           <Section title="Step One">
-             Edit <Text style={styles.highlight}>App.js</Text> to change this
-             screen and then come back to see your edits.
-           </Section>
-           <Section title="See Your Changes">
-             <ReloadInstructions />
-           </Section>
-           <Section title="Debug">
-             <DebugInstructions />
-           </Section>
-           <Section title="Learn More">
-             Read the docs to discover what to do next:
-           </Section>
-           <LearnMoreLinks />
-         </View>
-       </ScrollView>
-     </SafeAreaView>
-   );
- };
+      <Recycler items={items} />
 
- const styles = StyleSheet.create({
-   sectionContainer: {
-     marginTop: 32,
-     paddingHorizontal: 24,
-   },
-   sectionTitle: {
-     fontSize: 24,
-     fontWeight: '600',
-   },
-   sectionDescription: {
-     marginTop: 8,
-     fontSize: 18,
-     fontWeight: '400',
-   },
-   highlight: {
-     fontWeight: '700',
-   },
- });
+      <View style={{position: 'absolute', bottom: 34, start: 0, end: 0}}>
+        <Button
+          color={'red'}
+          title={`Generate ${count + 100}`}
+          onPress={() => {
+            setCount(count + 100);
+          }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
 
- export default App;
+function generateItems(count: number): Data[] {
+  let arr = new Array<Data>(count);
+  for (let i = 0; i < count; i++) {
+    arr[i] = {
+      text: `Item: ${i}`,
+      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+    };
+  }
+  return arr;
+}
+
+export default App;
